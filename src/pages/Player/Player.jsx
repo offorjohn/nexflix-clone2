@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react'
 import './Player.css'
 import back_arrow_icon from '../../assets/back_arrow_icon.png'
@@ -18,7 +16,6 @@ const Player = (props) => {
     type: ""
   })
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const options = {
     method: 'GET',
     headers: {
@@ -33,7 +30,7 @@ const Player = (props) => {
     .then(response => setApiData(response.results[0]))
     .catch(err => console.error(err));
     console.log(props);
-  },[id, options, props])
+  },[])
   
   
 
