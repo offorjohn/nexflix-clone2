@@ -10,6 +10,23 @@ a {
     font-weight: bold;
     text-align: center;
     color: white;
+}.loading-container {
+    position: fixed;
+    top: 70%; /* Move it down slightly */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background: transparent; /* Makes the background transparent */
+}
+
+.loading-spinner {
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
 }
 
 
