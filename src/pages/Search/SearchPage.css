@@ -1,0 +1,263 @@
+/* SearchPage.css */
+
+a {
+    text-decoration: none; /* Removes underline from all anchor tags */
+}
+
+.title {
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+}
+
+
+/* Base styles for search-container */
+.search-container {
+    background-color: black;
+    min-height: 70vh; /* Set min-height to 65vh for all screen sizes */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    padding: 1rem; /* Add some padding to avoid content touching edges */
+}
+
+/* Tab container styling */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tab-button {
+    padding: 0.5rem 1.25rem; /* py-2 px-5 */
+    border-radius: 0.375rem; /* rounded */
+    background-color: #2d2d2d; /* Equivalent of bg-gray-800 */
+    color: white;
+    font-size: 1.25rem; /* Adjust text size */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab-button-active {
+    background-color: #f40612; /* Darker shade of Netflix red for active state */
+}
+
+.tab-button:hover {
+    background-color: #f40612; /* Lighter shade of Netflix red for hover state */
+    color: white; /* Keep the text white on hover */
+}
+
+.title {
+    margin-top: 0.5rem;
+    font-size: 1.25rem; /* Adjust title size */
+    font-weight: bold; /* Ensures the title is bold */
+    text-align: center;
+    color: white; /* Makes the text white */
+    text-decoration: white; /* Removes the underline */
+}
+
+
+/* Form container styling */
+.form-container {
+    background-color: #1a1a1a;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: white;
+    font-family: Arial, sans-serif;
+    width: 100%; /* Ensure the form takes up full width */
+}
+
+.form-label {
+    font-size: 1.1rem;
+    color: #f1f1f1;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #2c2c2c;
+    color: white;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.form-input:focus {
+    background-color: #444;
+    border-color: #f40612;
+    outline: none;
+}
+
+.form-button {
+    padding: 0.75rem;
+    background-color: #f40612;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+    background-color: #c4060a;
+}
+
+/* Media queries for responsiveness */
+
+/* Small devices (phones, less than 600px) */
+@media (max-width: 600px) {
+    .tab-button {
+        font-size: 1rem; /* Reduce font size */
+        padding: 0.4rem 1rem; /* Adjust padding */
+    }
+
+    .form-container {
+        padding: 1.5rem; /* Reduce padding for smaller screens */
+        width: 90%; /* Ensure form doesn't overflow */
+        max-width: 100%; /* Allow form to expand to full screen */
+    }
+
+    .form-label {
+        font-size: 1rem; /* Reduce label font size */
+    }
+
+    .form-input {
+        font-size: 0.9rem; /* Reduce input font size */
+    }
+
+    .form-button {
+        font-size: 1rem; /* Reduce button font size */
+    }
+}
+
+/* Medium devices (tablets, 600px to 768px) */
+@media (min-width: 600px) and (max-width: 768px) {
+    .tab-button {
+        font-size: 1.1rem; /* Slightly smaller font size */
+        padding: 0.45rem 1.1rem; /* Adjust padding */
+    }
+
+    .form-container {
+        padding: 1.8rem; /* Slightly reduce padding */
+        width: 80%; /* Adjust width to fit screen better */
+        max-width: 450px; /* Increase max width */
+    }
+
+    .form-label {
+        font-size: 1.05rem; /* Adjust label size */
+    }
+
+    .form-input {
+        font-size: 0.95rem; /* Adjust input size */
+    }
+
+    .form-button {
+        font-size: 1.05rem; /* Adjust button font size */
+    }
+}
+
+/* Large devices (laptops, 768px and above) */
+@media (min-width: 768px) {
+    .tab-button {
+        font-size: 1.25rem; /* Default font size */
+        padding: 0.5rem 1.25rem; /* Default padding */
+    }
+
+    .form-container {
+        padding: 2rem; /* Default padding */
+        width: 60%; /* Larger width for bigger screens */
+    }
+
+    .form-label {
+        font-size: 1.1rem; /* Default label size */
+    }
+
+    .form-input {
+        font-size: 1rem; /* Default input size */
+    }
+
+    .form-button {
+        font-size: 1.1rem; /* Default button font size */
+    }
+}
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* Default to 1 column */
+    gap: 1rem; /* Add space between grid items */
+  }
+  
+  .grid-item {
+    background-color: #2d3748; /* Dark gray background */
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    object-fit: cover;
+  }
+  
+  /* Title Styles */
+  .title {
+    margin-top: 0.5rem;
+    font-size: 1.25rem; /* Adjust title size */
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Media Queries */
+  @media (min-width: 640px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .grid-container {
+      grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .grid-container {
+      grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+    }
+  }
+  
+  /* For images in 'person' category */
+  .person-image {
+    max-height: 24rem; /* Set max height for person images */
+    width: auto;
+    border-radius: 50%;
+  }
+  
+  .person-info {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
+  .person-name {
+    font-size: 1.125rem; /* Adjust name font size */
+    font-weight: bold;
+  }
+  
+
+/* Extra Large devices (desktop, 1200px and above) */
+@media (min-width: 1200px) {
+    .form-container {
+        max-width: 500px; /* Increase max-width */
+    }
+}

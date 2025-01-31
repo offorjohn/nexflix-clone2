@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import './Footer.css'
 import youtube_icon from '../../assets/youtube_icon.png'
