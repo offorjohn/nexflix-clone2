@@ -1,45 +1,398 @@
-.player{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.player img{
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    cursor: pointer;
-}
-.player iframe{
-    width: 80%;
-    aspect-ratio: 16/9;
-    border-radius: 10px;
-}
-.player-info{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 80%;
+.netflix-player {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (max-width: 800px) {
-    .player iframe{
-        width: 90%;
-    }
-    .player-info{
-        font-size: 14px;
-        width: 90%;
-    }
+/* Styles for rewind and fast-forward buttons */
+.rewind-button,
+.fast-forward-button {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
-@media (max-width: 500px) {
-    
-    .player-info{
-        font-size: 12px;
-        flex-direction: column;
-        align-items: start;
-        gap: 8px;
-        margin-top: 8px;
-    }
+
+/* Default width on smaller screens */
+.progress-range {
+  width: 75%;
+}
+/* Container for the volume control */
+.volume-control {
+  position: relative;
+  display: inline-block;
+  margin: 0 10px; /* adjust spacing as needed */
+}
+
+/* Style for the volume button */
+.volume-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+/* Volume slider: initially hidden, appears on hover over the volume control */
+.volume-slider {
+  position: absolute;
+  bottom: 62%;  /* Position above the volume button */
+  left: 95%;
+  transform: translateX(-50%) rotate(-90deg);
+  transform-origin: center;
+  width: 100px;  /* This controls the “length” of the slider */
+  height: 20px;
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #444;  /* Solid background for easier clicking */
+  background-image: none;    /* Prevent any default progress gradient */
+  border-radius: 4px;
+}
+
+/* Show the volume slider when hovering over the volume control */
+.volume-control:hover .volume-slider {
+  display: block;
+}
+
+/* Custom styling for WebKit browsers for the slider track */
+.volume-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background-color: #444; /* Keep the background constant */
+  background-image: none;   /* No gradient/progress fill */
+  border-radius: 4px;
+  border: none;
+}
+
+/* Custom styling for WebKit browsers for the slider thumb */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #fff;  /* White thumb for visibility */
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -3px; /* Centers the thumb on the track */
+}
+
+/* Custom styling for Firefox for the slider track */
+.volume-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background-color: #444;
+  background-image: none;
+  border-radius: 4px;
+  border: none;
+}
+
+/* Custom styling for Firefox for the slider thumb */
+.volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Optional: remove focus outline for the slider */
+.volume-slider:focus {
+  outline: none;
+}
+
+
+/* Increase icon size within the buttons */
+.rewind-button svg,
+.fast-forward-button svg {
+  font-size: 56px;  /* Adjust as needed */
+}
+
+/* Styling for the "10" inside the button */
+.button-label {
+  position: absolute;
+  right: 32px;     /* Position the label towards the right */
+  bottom: 30px;    /* Position the label towards the bottom */
+  font-size: 15px; /* Adjust size as needed */
+  font-weight: bold;
+  color: white;
+  pointer-events: none; /* Ensures the label doesn't block button clicks */
+}
+
+/* The video-wrapper centers the video and maintains a 16:9 aspect ratio.
+   The video will fill the wrapper (using object-fit: cover for a fill effect)
+   but black bars will appear if the screen aspect ratio forces it. */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  /* Use CSS aspect-ratio (supported in modern browsers) to enforce a 16:9 container */
+  aspect-ratio: 16 / 9;
+  max-height: 100vh;  /* Prevent the container from exceeding viewport height */
+  background: black;
+  overflow: hidden;
+}
+
+/* Full-screen container for the video content inside the wrapper */
+.video-container {
+  position: absolute; /* Positioned within the video-wrapper */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Allow the video to cover the container while preserving its aspect ratio */
+  width: 100%;
+  height: 100%;
+}
+
+/* For ReactPlayer (or underlying video element) */
+.video-container .react-player,
+.video-container video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Control styling: these will sit above the video */
+.controls {
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: transparent;
+  border-radius: 5px;
+  z-index: 1001;
+  justify-content: center;
+  align-content: center;
+  flex-direction: row;
+
+}
+
+/* Additional control styles */
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+  margin: 0 10px;
+  padding: 10px 20px;
+  transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.controls button:hover {
+  transform: scale(1.2);
+}
+
+/* The play-pause button styling */
+.play-pause-button {
+  color: #ff0000;
+  font-size: 65px;
+}
+
+/* Range input styling for sliders */
+.controls input[type="range"] {
+  flex: 1;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Progress bar styling */
+.progress-bar {
+  position: absolute;
+  bottom: 140px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: transparent;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.progress-bar::-webkit-slider-runnable-track,
+.progress-bar::-moz-range-track {
+  background: red;
+  height: 5px;
+}
+
+/* -----------------------------------------------
+   Default Button Styles for all controls
+   ----------------------------------------------- */
+.controls button,
+.rewind-button,
+.fast-forward-button,
+.play-pause-button {
+  width: 80px;
+  height: 80px;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.controls button:hover,
+.rewind-button:hover,
+.fast-forward-button:hover,
+.play-pause-button:hover {
+  transform: scale(1.2);
+}
+
+/* -----------------------------------------------
+   Media Query: Smaller Screens — keep sizing as before
+   ----------------------------------------------- */
+@media screen and (max-width: 768px) {
+  /* Default for most controls */
+  .controls button,
+  .play-pause-button,
+  /* (Assuming you have a volume button with class .volume-button) */
+  .volume-button {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    margin: 0 4px; /* Bring controls closer together */
+  }
+  
+  /* Make only the rewind and fast-forward buttons slightly larger
+     so that the "10" label fits correctly inside them */
+  .rewind-button,
+  .fast-forward-button {
+    width: 70px;
+    height: 70px;
+    font-size: 35px;
+    margin: 0 5px; /* Reduce spacing between these and adjacent buttons */
+  }
+  
+  /* Adjust the position of the "10" label for the larger rewind/fast-forward buttons */
+  .rewind-button .button-label,
+  .fast-forward-button .button-label {
+    right: 26px;
+    bottom: 24px;
+    font-size: 9px;
+  }
+  
+  .controls {
+    padding: 20px 5px;
+  }
+}
+
+/* For very small screens (max-width: 480px), you can keep or further tweak these values if needed */
+@media screen and (max-width: 480px) {
+  /* Optionally, adjust individual button sizes as desired */
+  /* Example adjustments: */
+  .play-pause-button {
+    width: 53px;
+    height: 53px;
+    font-size: 24px;
+  }
+  /* Other adjustments can be made similarly */
+  
+  .controls {
+    padding: 10px;
+  }
+}
+
+/* If the viewport is wider than 16:9 (e.g. very wide screens),
+   the video-wrapper will maintain 16:9 and center it horizontally,
+   leaving black spaces on the left and right. */
+@media screen and (min-aspect-ratio: 16/9) {
+  .video-wrapper {
+    width: auto;
+    height: 100vh;
+    margin: 0 auto;
+  }
+}
+
+/* If the viewport is taller than 16:9 (e.g. tablets/phones in portrait),
+   the video-wrapper will fill the full width and center vertically,
+   leaving letterboxed (black) bars on the top and bottom. */
+@media screen and (max-aspect-ratio: 16/9) {
+  .video-wrapper {
+    width: 100vw;
+    height: auto;
+    /* The aspect-ratio property ensures a 16:9 box, even if height adjusts */
+  }
+}
+
+/* On larger screens (e.g., min-width: 1024px), set width to 85% */
+@media screen and (min-width: 1024px) {
+  .progress-range {
+    width: 90%;
+  }
+}
+
+/* -----------------------------------------------
+   Adjustments for Larger Screens (min-width: 1024px)
+   ----------------------------------------------- */
+@media screen and (min-width: 1024px) {
+  /* Add extra left/right padding for a Netflix-like layout */
+  .controls {
+    padding: 10px;
+    /* Use space-between so that fullscreen button stays at right */
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Push the fullscreen button to the far right */
+  .fullscreen-button {
+    margin-left: auto;
+  }
+}
+/* Ensure buttons have no extra margin */
+.controls button {
+    margin: 0;
+    padding: 5px 17px; /* Adjust button size */
+}
+
+/* For smaller screens (max-width: 768px), reduce the bottom spacing */
+@media screen and (max-width: 768px) {
+  .progress-bar {
+    bottom: 80px; /* Adjust this value as needed */
+  }
+}
+
+/* For very small screens (max-width: 480px), reduce it further */
+@media screen and (max-width: 480px) {
+  .progress-bar {
+    bottom: 90px; /* Adjust this value as needed */
+  }
 }
