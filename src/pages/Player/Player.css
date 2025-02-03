@@ -305,7 +305,7 @@ input[type="range"]::-webkit-slider-thumb {
   }
   
   .progress-range {
-    width: 80%;
+    width: 70%;
   }
 }
 
@@ -346,13 +346,13 @@ input[type="range"]::-webkit-slider-thumb {
 /* Adjust progress bar bottom spacing on smaller screens */
 @media screen and (max-width: 768px) {
   .progress-bar {
-    bottom: 80px;
+    bottom: 10px;
   }
 }
 
 @media screen and (max-width: 480px) {
   .progress-bar {
-    bottom: 90px;
+    bottom: 100px;
   }
 }
 
