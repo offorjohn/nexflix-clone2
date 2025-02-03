@@ -41,6 +41,10 @@ const NetflixPlayer = () => {
   // New state for feedback icon (possible values: "play", "pause", "fastForward", "rewind")
   const [feedbackIcon, setFeedbackIcon] = useState(null);
 
+  // Refs to help detect double taps on touch devices
+  const lastTapRef = useRef(0);
+  const tapTimeoutRef = useRef(null);
+
   // Helper function to show a feedback icon briefly
   const showFeedbackIcon = (type) => {
     setFeedbackIcon(type);
@@ -132,7 +136,7 @@ const NetflixPlayer = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [playing]);
 
-  // When clicking on the video area, toggle play/pause (like YouTube)
+  // For non-touch devices, a simple click toggles play/pause
   const handleVideoClick = () => {
     if (playing) {
       setPlaying(false);
@@ -143,7 +147,7 @@ const NetflixPlayer = () => {
     }
   };
 
-  // Double-click handler: determine left/right click position for rewind/fast-forward
+  // For non-touch devices, double-click determines rewind/fast-forward
   const handleDoubleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -153,6 +157,41 @@ const NetflixPlayer = () => {
       rewind();
     } else {
       fastForward();
+    }
+  };
+
+  // Touch handler for mobile: differentiate between single and double taps.
+  const handleTouchEnd = (e) => {
+    const currentTime = Date.now();
+    const tapDelay = 300; // milliseconds threshold for double-tap
+    const timeSinceLastTap = currentTime - lastTapRef.current;
+    clearTimeout(tapTimeoutRef.current);
+
+    if (timeSinceLastTap < tapDelay && timeSinceLastTap > 0) {
+      // Double-tap detected. Determine left/right position.
+      const rect = e.currentTarget.getBoundingClientRect();
+      const touchX = e.changedTouches[0].clientX - rect.left;
+      const containerWidth = rect.width;
+      if (touchX < containerWidth / 2) {
+        rewind();
+      } else {
+        fastForward();
+      }
+      lastTapRef.current = 0; // reset
+    } else {
+      // Set a timeout to register single tap if no second tap occurs.
+      lastTapRef.current = currentTime;
+      tapTimeoutRef.current = setTimeout(() => {
+        // Single tap action: toggle play/pause
+        if (playing) {
+          setPlaying(false);
+          showFeedbackIcon("pause");
+        } else {
+          setPlaying(true);
+          showFeedbackIcon("play");
+        }
+        lastTapRef.current = 0;
+      }, tapDelay);
     }
   };
 
@@ -179,6 +218,9 @@ const NetflixPlayer = () => {
     }
   };
 
+  // Determine if the device supports touch events.
+  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
   return (
     <div
       className="netflix-player"
@@ -187,9 +229,12 @@ const NetflixPlayer = () => {
       <div className="video-wrapper">
         {/* Video Player */}
         <div 
-          className="video-container" 
-          onClick={handleVideoClick} 
-          onDoubleClick={handleDoubleClick}
+          className="video-container"
+          // Use different event handlers based on device type
+          onClick={!isTouchDevice ? handleVideoClick : undefined}
+          onDoubleClick={!isTouchDevice ? handleDoubleClick : undefined}
+          onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
+          onContextMenu={(e) => e.preventDefault()}  // Disable right-click context menu
         >
           {movieUrl ? (
             <ReactPlayer
@@ -203,6 +248,15 @@ const NetflixPlayer = () => {
               controls={false}
               width="100%"
               height="100%"
+              config={{
+                file: {
+                  attributes: {
+                    // Disables the download option and picture-in-picture on supporting browsers
+                    controlsList: "nodownload noremoteplayback",
+                    disablePictureInPicture: true
+                  }
+                }
+              }}
             />
           ) : (
             <p>Loading video...</p>
