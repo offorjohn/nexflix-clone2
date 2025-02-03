@@ -8,7 +8,13 @@
   align-items: center;
   justify-content: center;
 }
-
+/* Fullscreen adjustments to ensure the player fills the viewport */
+.netflix-player:fullscreen,
+.video-wrapper:fullscreen,
+.video-container:fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
 /* Styles for rewind and fast-forward buttons */
 .rewind-button,
 .fast-forward-button {

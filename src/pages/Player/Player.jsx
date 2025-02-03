@@ -120,13 +120,44 @@ const NetflixPlayer = () => {
     setPlaying((prev) => !prev);
   };
 
-  // Toggle Fullscreen Mode
+  // Double-click handler: determine left/right click position for rewind/fast-forward
+  const handleDoubleClick = (e) => {
+    // Get the bounding rectangle of the container
+    const rect = e.currentTarget.getBoundingClientRect();
+    // Determine the click's X position relative to the container
+    const clickX = e.clientX - rect.left;
+    const containerWidth = rect.width;
+
+    if (clickX < containerWidth / 2) {
+      // Left half: Rewind 10 seconds
+      rewind();
+    } else {
+      // Right half: Fast forward 10 seconds
+      fastForward();
+    }
+  };
+
+  // Toggle Fullscreen Mode with optional orientation lock
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen().then(() => {
+        // Attempt to lock orientation to landscape if supported
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock("landscape").catch((err) => {
+            console.error("Orientation lock failed:", err);
+          });
+        }
+      }).catch((err) => {
+        console.error("Error attempting full-screen mode:", err);
+      });
     } else {
       if (document.exitFullscreen) {
-        document.exitFullscreen();
+        document.exitFullscreen().then(() => {
+          // Unlock orientation if possible
+          if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+          }
+        });
       }
     }
   };
@@ -138,7 +169,11 @@ const NetflixPlayer = () => {
     >
       <div className="video-wrapper">
         {/* Video Player */}
-        <div className="video-container" onClick={handleVideoClick}>
+        <div 
+          className="video-container" 
+          onClick={handleVideoClick} 
+          onDoubleClick={handleDoubleClick}
+        >
           {/* Only render the player if movieUrl is available */}
           {movieUrl ? (
             <ReactPlayer
