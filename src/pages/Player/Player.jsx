@@ -38,6 +38,15 @@ const NetflixPlayer = () => {
   const [progressHovered, setProgressHovered] = useState(false);
   const [movieUrl, setMovieUrl] = useState(null); // URL for the selected movie
 
+  // New state for feedback icon (possible values: "play", "pause", "fastForward", "rewind")
+  const [feedbackIcon, setFeedbackIcon] = useState(null);
+
+  // Helper function to show a feedback icon briefly
+  const showFeedbackIcon = (type) => {
+    setFeedbackIcon(type);
+    setTimeout(() => setFeedbackIcon(null), 1000);
+  };
+
   // Fetch the movies.json file and find the movie with matching ID.
   useEffect(() => {
     fetch('https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json')
@@ -80,11 +89,13 @@ const NetflixPlayer = () => {
   const fastForward = () => {
     const currentTime = playerRef.current.getCurrentTime();
     playerRef.current.seekTo(currentTime + 10, "seconds");
+    showFeedbackIcon("fastForward");
   };
 
   const rewind = () => {
     const currentTime = playerRef.current.getCurrentTime();
     playerRef.current.seekTo(Math.max(0, currentTime - 10), "seconds");
+    showFeedbackIcon("rewind");
   };
 
   // Handle keyboard shortcuts:
@@ -96,7 +107,13 @@ const NetflixPlayer = () => {
       switch (e.code) {
         case "Space":
           e.preventDefault(); // Prevent page scroll
-          setPlaying((prev) => !prev);
+          if (playing) {
+            setPlaying(false);
+            showFeedbackIcon("pause");
+          } else {
+            setPlaying(true);
+            showFeedbackIcon("play");
+          }
           break;
         case "ArrowRight":
           e.preventDefault();
@@ -113,26 +130,28 @@ const NetflixPlayer = () => {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [playing]);
 
   // When clicking on the video area, toggle play/pause (like YouTube)
   const handleVideoClick = () => {
-    setPlaying((prev) => !prev);
+    if (playing) {
+      setPlaying(false);
+      showFeedbackIcon("pause");
+    } else {
+      setPlaying(true);
+      showFeedbackIcon("play");
+    }
   };
 
   // Double-click handler: determine left/right click position for rewind/fast-forward
   const handleDoubleClick = (e) => {
-    // Get the bounding rectangle of the container
     const rect = e.currentTarget.getBoundingClientRect();
-    // Determine the click's X position relative to the container
     const clickX = e.clientX - rect.left;
     const containerWidth = rect.width;
 
     if (clickX < containerWidth / 2) {
-      // Left half: Rewind 10 seconds
       rewind();
     } else {
-      // Right half: Fast forward 10 seconds
       fastForward();
     }
   };
@@ -141,7 +160,6 @@ const NetflixPlayer = () => {
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => {
-        // Attempt to lock orientation to landscape if supported
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock("landscape").catch((err) => {
             console.error("Orientation lock failed:", err);
@@ -153,7 +171,6 @@ const NetflixPlayer = () => {
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen().then(() => {
-          // Unlock orientation if possible
           if (screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
           }
@@ -174,7 +191,6 @@ const NetflixPlayer = () => {
           onClick={handleVideoClick} 
           onDoubleClick={handleDoubleClick}
         >
-          {/* Only render the player if movieUrl is available */}
           {movieUrl ? (
             <ReactPlayer
               ref={playerRef}
@@ -185,11 +201,20 @@ const NetflixPlayer = () => {
               onProgress={handleProgress}
               onDuration={handleDuration}
               controls={false}
-              width="100%" // Ensure the player fills its container
+              width="100%"
               height="100%"
             />
           ) : (
             <p>Loading video...</p>
+          )}
+          {/* Feedback Icon Overlay */}
+          {feedbackIcon && (
+            <div className={`feedback-icon ${feedbackIcon}`}>
+              {feedbackIcon === "play" && <FaPlay />}
+              {feedbackIcon === "pause" && <FaPause />}
+              {feedbackIcon === "fastForward" && <FaRedoAlt />}
+              {feedbackIcon === "rewind" && <FaUndoAlt />}
+            </div>
           )}
         </div>
       </div>
@@ -197,86 +222,97 @@ const NetflixPlayer = () => {
       {/* Controls */}
       {controlsVisible && (
         <div className="controls">
-          {/* Play/Pause Button */}
-          <div className="control-button">
-            <button
-              className="play-pause-button"
-              onClick={() => setPlaying(!playing)}
-            >
-              {playing ? <FaPause /> : <FaPlay />}
-            </button>
+          <div className="left-controls">
+            {/* Play/Pause Button */}
+            <div className="control-button">
+              <button
+                className="play-pause-button"
+                onClick={() => {
+                  if (playing) {
+                    setPlaying(false);
+                    showFeedbackIcon("pause");
+                  } else {
+                    setPlaying(true);
+                    showFeedbackIcon("play");
+                  }
+                }}
+              >
+                {playing ? <FaPause /> : <FaPlay />}
+              </button>
+            </div>
+
+            {/* Rewind Button */}
+            <div className="control-button">
+              <button className="rewind-button" onClick={rewind}>
+                <FaUndoAlt />
+                <span className="button-label">10</span>
+              </button>
+            </div>
+
+            {/* Fast Forward Button */}
+            <div className="control-button">
+              <button className="fast-forward-button" onClick={fastForward}>
+                <FaRedoAlt />
+                <span className="button-label">10</span>
+              </button>
+            </div>
           </div>
 
-          {/* Rewind Button */}
-          <div className="control-button">
-            <button className="rewind-button" onClick={rewind}>
-              <FaUndoAlt />
-              <span className="button-label">10</span>
-            </button>
-          </div>
+          <div className="right-controls">
+            {/* Volume Control */}
+            <div className="volume-control">
+              <button
+                className="volume-button"
+                onClick={() => setMuted(!muted)}
+              >
+                {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={volume}
+                onChange={(e) => setVolume(parseFloat(e.target.value))}
+                className="volume-slider"
+              />
+            </div>
 
-          {/* Fast Forward Button */}
-          <div className="control-button">
-            <button className="fast-forward-button" onClick={fastForward}>
-              <FaRedoAlt />
-              <span className="button-label">10</span>
-            </button>
-          </div>
-
-          {/* Volume Control */}
-          <div className="volume-control">
-            <button
-              className="volume-button"
-              onClick={() => setMuted(!muted)}
-            >
-              {muted ? <FaVolumeMute /> : <FaVolumeUp />}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="volume-slider"
-            />
-          </div>
-
-          {/* Progress Bar */}
-          <div className="progress-bar">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={progress}
-              onChange={(e) => {
-                const newProgress = parseFloat(e.target.value);
-                playerRef.current.seekTo(newProgress / 100);
-                setProgress(newProgress);
-              }}
-              className="progress-range"
-              onMouseEnter={() => setProgressHovered(true)}
-              onMouseLeave={() => setProgressHovered(false)}
-              style={{
-                height: "4px",
-                appearance: "none",
-                borderRadius: "5px",
-                // When hovered, show uniform background; otherwise, show gradient reflecting progress.
-                background: progressHovered
-                  ? "#ddd"
-                  : `linear-gradient(to right, red ${progress}%, #ddd ${progress}%)`,
-                outline: "none",
-                cursor: "pointer",
-              }}
-            />
-            <span className="progress-timer">{formatTime(duration - playedSeconds)}</span>
-          </div>
-          
-          {/* Fullscreen Button */}
-          <div className="fullscreen-button">
-            <button onClick={toggleFullScreen}>
-              <FaExpand />
-            </button>
+            {/* Progress Bar */}
+            <div className="progress-bar">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={progress}
+                onChange={(e) => {
+                  const newProgress = parseFloat(e.target.value);
+                  playerRef.current.seekTo(newProgress / 100);
+                  setProgress(newProgress);
+                }}
+                className="progress-range"
+                onMouseEnter={() => setProgressHovered(true)}
+                onMouseLeave={() => setProgressHovered(false)}
+                style={{
+                  height: "4px",
+                  appearance: "none",
+                  borderRadius: "5px",
+                  background: progressHovered
+                    ? "#ddd"
+                    : `linear-gradient(to right, red ${progress}%, #ddd ${progress}%)`,
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+              />
+              <span className="progress-timer">{formatTime(duration - playedSeconds)}</span>
+            </div>
+            
+            {/* Fullscreen Button */}
+            <div className="fullscreen-button">
+              <button onClick={toggleFullScreen}>
+                <FaExpand />
+              </button>
+            </div>
           </div>
         </div>
       )}
