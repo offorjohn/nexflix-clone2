@@ -238,7 +238,7 @@ const NetflixPlayer = () => {
       <img
     src={back_arrow_icon}
     alt="Back"
-    onClick={() => navigate(-2)}
+    onClick={() => navigate("/")}
     style={{
       position: "fixed", // fixed so it stays in place on scroll/click
       top: "20px",       // adjust as needed
