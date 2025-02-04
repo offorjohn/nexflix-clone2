@@ -474,3 +474,19 @@ input[type="range"]::-webkit-slider-thumb {
     bottom: 100px;
   }
 }
+
+
+@media screen and (max-width: 480px) {
+  /* Further adjustments for very small screens */
+  .controls {
+    bottom: 50px; /* Adjust if necessary */
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  /* Move the controls up from the bottom on mobile */
+  .controls {
+    bottom: 50px; /* Adjust this value as needed */
+  }
+}
