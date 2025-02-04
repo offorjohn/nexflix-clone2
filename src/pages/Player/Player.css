@@ -479,7 +479,7 @@ input[type="range"]::-webkit-slider-thumb {
 @media screen and (max-width: 480px) {
   /* Further adjustments for very small screens */
   .controls {
-    bottom: 50px; /* Adjust if necessary */
+    bottom: 20px; /* Adjust if necessary */
   }
 }
 
@@ -487,6 +487,6 @@ input[type="range"]::-webkit-slider-thumb {
 @media screen and (max-width: 768px) {
   /* Move the controls up from the bottom on mobile */
   .controls {
-    bottom: 10px; /* Adjust this value as needed */
+    bottom: 50px; /* Adjust this value as needed */
   }
 }
