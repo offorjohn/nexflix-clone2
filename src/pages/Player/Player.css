@@ -487,6 +487,6 @@ input[type="range"]::-webkit-slider-thumb {
 @media screen and (max-width: 768px) {
   /* Move the controls up from the bottom on mobile */
   .controls {
-    bottom: 50px; /* Adjust this value as needed */
+    bottom: 10px; /* Adjust this value as needed */
   }
 }
