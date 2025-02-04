@@ -234,19 +234,22 @@ const NetflixPlayer = () => {
   const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
   return (
-    <div className="player">
+    <div className="player"
+    
+    >{controlsVisible && (
       <img
-    src={back_arrow_icon}
-    alt="Back"
-    onClick={() => navigate("/")}
-    style={{
-      position: "fixed", // fixed so it stays in place on scroll/click
-      top: "20px",       // adjust as needed
-      left: "20px",      // adjust as needed
-      zIndex: 1000,      // high enough to be on top of video and controls
-      cursor: "pointer"  // indicate it's clickable
-    }}
-  />
+        src={back_arrow_icon}
+        alt="Back"
+        onClick={() => navigate("/")}
+        style={{
+          position: "fixed", // fixed so it stays in place on scroll/click
+          top: "20px",       // adjust as needed
+          left: "20px",      // adjust as needed
+          zIndex: 1000,      // high enough to be on top of video and controls
+          cursor: "pointer"  // indicate it's clickable
+        }}
+      />
+    )}
       <div
         className="netflix-player"
         onMouseMove={() => setControlsVisible(true)}
