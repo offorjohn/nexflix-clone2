@@ -440,3 +440,37 @@ input[type="range"]::-webkit-slider-thumb {
       margin-top: 8px;
   }
 }
+
+/* -------------------------------
+   Control Bar & Progress Bar Fixed Positioning
+--------------------------------- */
+
+/* Set the controls to stick at the bottom of the viewport */
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* left & right groups */
+  padding: 10px;
+  background: transparent;
+  border-radius: 5px;
+  z-index: 1001;
+}
+
+
+/* Remove any media query overrides for .progress-bar bottom positioning */
+@media screen and (max-width: 768px) {
+  /* Instead of changing bottom, keep it fixed */
+  .progress-bar {
+    bottom: 100px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .progress-bar {
+    bottom: 100px;
+  }
+}
