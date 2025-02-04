@@ -2,15 +2,17 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import "./Player.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+import back_arrow_icon from "../../assets/back_arrow_icon.png";
 import {
   FaPlay,
   FaPause,
   FaVolumeUp,
   FaVolumeMute,
   FaExpand,
-  FaRedoAlt,  // Circular Forward
-  FaUndoAlt,  // Circular Backward
+  FaRedoAlt, // Circular Forward
+  FaUndoAlt, // Circular Backward
 } from "react-icons/fa";
 
 // Utility function to format seconds into mm:ss or hh:mm:ss if needed.
@@ -27,7 +29,10 @@ const formatTime = (seconds) => {
 
 const NetflixPlayer = () => {
   const { id } = useParams(); // Get the movie ID from the URL
+  const navigate = useNavigate(); // Initialize navigate
+
   const playerRef = useRef(null);
+  // Set initial playing state to true.
   const [playing, setPlaying] = useState(true);
   const [muted, setMuted] = useState(false);
   const [playedSeconds, setPlayedSeconds] = useState(0);
@@ -38,8 +43,10 @@ const NetflixPlayer = () => {
   const [progressHovered, setProgressHovered] = useState(false);
   const [movieUrl, setMovieUrl] = useState(null); // URL for the selected movie
 
-  // New state for feedback icon (possible values: "play", "pause", "fastForward", "rewind")
+  // New state for feedback icon (if needed)
   const [feedbackIcon, setFeedbackIcon] = useState(null);
+  // This flag ensures the forced toggle only happens once.
+  const [hasForcedPlay, setHasForcedPlay] = useState(false);
 
   // Refs to help detect double taps on touch devices
   const lastTapRef = useRef(0);
@@ -53,24 +60,37 @@ const NetflixPlayer = () => {
 
   // Fetch the movies.json file and find the movie with matching ID.
   useEffect(() => {
-    fetch('https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json')
-      .then(response => {
+    fetch("https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json")
+      .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         // Ensure matching types (if IDs are numbers in JSON but strings from URL, convert accordingly)
-        const selectedMovie = data.find(movie => String(movie.id) === id);
+        const selectedMovie = data.find((movie) => String(movie.id) === id);
         if (selectedMovie) {
           setMovieUrl(selectedMovie.url);
         } else {
           console.error("Movie not found");
         }
       })
-      .catch(err => console.error('Error fetching movies:', err));
+      .catch((err) => console.error("Error fetching movies:", err));
   }, [id]);
+
+  // onReady callback for ReactPlayer.
+  // This simulates a pause then play so that the video is forced to start.
+  const handlePlayerReady = () => {
+    if (!hasForcedPlay) {
+      // Simulate a pause then play action
+      setPlaying(false);
+      setTimeout(() => {
+        setPlaying(true);
+        setHasForcedPlay(true);
+      }, 100); // You may adjust the delay as needed
+    }
+  };
 
   // Update progress state while video is playing
   const handleProgress = (state) => {
@@ -160,7 +180,7 @@ const NetflixPlayer = () => {
     }
   };
 
-  // Touch handler for mobile: differentiate between single and double taps.
+  // Touch handler for mobile: only double-tap triggers rewind/fast-forward.
   const handleTouchEnd = (e) => {
     const currentTime = Date.now();
     const tapDelay = 300; // milliseconds threshold for double-tap
@@ -177,36 +197,28 @@ const NetflixPlayer = () => {
       } else {
         fastForward();
       }
-      lastTapRef.current = 0; // reset
+      lastTapRef.current = 0; // reset after double-tap
     } else {
-      // Set a timeout to register single tap if no second tap occurs.
+      // Just register the time of the tap without toggling play/pause.
       lastTapRef.current = currentTime;
-      tapTimeoutRef.current = setTimeout(() => {
-        // Single tap action: toggle play/pause
-        if (playing) {
-          setPlaying(false);
-          showFeedbackIcon("pause");
-        } else {
-          setPlaying(true);
-          showFeedbackIcon("play");
-        }
-        lastTapRef.current = 0;
-      }, tapDelay);
     }
   };
 
   // Toggle Fullscreen Mode with optional orientation lock
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => {
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock("landscape").catch((err) => {
-            console.error("Orientation lock failed:", err);
-          });
-        }
-      }).catch((err) => {
-        console.error("Error attempting full-screen mode:", err);
-      });
+      document.documentElement
+        .requestFullscreen()
+        .then(() => {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape").catch((err) => {
+              console.error("Orientation lock failed:", err);
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Error attempting full-screen mode:", err);
+        });
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen().then(() => {
@@ -222,154 +234,171 @@ const NetflixPlayer = () => {
   const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
   return (
-    <div
-      className="netflix-player"
-      onMouseMove={() => setControlsVisible(true)}
-    >
-      <div className="video-wrapper">
-        {/* Video Player */}
-        <div 
-          className="video-container"
-          // Use different event handlers based on device type
-          onClick={!isTouchDevice ? handleVideoClick : undefined}
-          onDoubleClick={!isTouchDevice ? handleDoubleClick : undefined}
-          onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
-          onContextMenu={(e) => e.preventDefault()}  // Disable right-click context menu
-        >
-          {movieUrl ? (
-            <ReactPlayer
-              ref={playerRef}
-              url={movieUrl}
-              playing={playing}
-              muted={muted}
-              volume={volume}
-              onProgress={handleProgress}
-              onDuration={handleDuration}
-              controls={false}
-              width="100%"
-              height="100%"
-              config={{
-                file: {
-                  attributes: {
-                    // Disables the download option and picture-in-picture on supporting browsers
-                    controlsList: "nodownload noremoteplayback",
-                    disablePictureInPicture: true
-                  }
-                }
-              }}
-            />
-          ) : (
-            <p>Loading video...</p>
-          )}
-          {/* Feedback Icon Overlay */}
-          {feedbackIcon && (
-            <div className={`feedback-icon ${feedbackIcon}`}>
-              {feedbackIcon === "play" && <FaPlay />}
-              {feedbackIcon === "pause" && <FaPause />}
-              {feedbackIcon === "fastForward" && <FaRedoAlt />}
-              {feedbackIcon === "rewind" && <FaUndoAlt />}
-            </div>
-          )}
+    <div className="player">
+      <img
+    src={back_arrow_icon}
+    alt="Back"
+    onClick={() => navigate(-2)}
+    style={{
+      position: "fixed", // fixed so it stays in place on scroll/click
+      top: "20px",       // adjust as needed
+      left: "20px",      // adjust as needed
+      zIndex: 1000,      // high enough to be on top of video and controls
+      cursor: "pointer"  // indicate it's clickable
+    }}
+  />
+      <div
+        className="netflix-player"
+        onMouseMove={() => setControlsVisible(true)}
+      >
+        <div className="video-wrapper">
+          {/* Video Player */}
+          <div
+            className="video-container"
+            // Use different event handlers based on device type.
+            onClick={!isTouchDevice ? handleVideoClick : undefined}
+            onDoubleClick={!isTouchDevice ? handleDoubleClick : undefined}
+            onTouchEnd={isTouchDevice ? handleTouchEnd : undefined}
+            onContextMenu={(e) => e.preventDefault()} // Disable right-click context menu.
+          >
+            {movieUrl ? (
+              <ReactPlayer
+                ref={playerRef}
+                url={movieUrl}
+                playing={playing} // Controlled by state.
+                muted={muted}
+                volume={volume}
+                onReady={handlePlayerReady}
+                onProgress={handleProgress}
+                onDuration={handleDuration}
+                controls={false}
+                width="100%"
+                height="100%"
+                config={{
+                  file: {
+                    attributes: {
+                      // Disables the download option and picture-in-picture on supporting browsers.
+                      controlsList: "nodownload noremoteplayback",
+                      disablePictureInPicture: true,
+                    },
+                  },
+                }}
+              />
+            ) : (
+              <p>Loading video...</p>
+            )}
+            {/* Feedback Icon Overlay */}
+            {feedbackIcon && (
+              <div className={`feedback-icon ${feedbackIcon}`}>
+                {feedbackIcon === "play" && <FaPlay />}
+                {feedbackIcon === "pause" && <FaPause />}
+                {feedbackIcon === "fastForward" && <FaRedoAlt />}
+                {feedbackIcon === "rewind" && <FaUndoAlt />}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Controls */}
+        {controlsVisible && (
+          <div className="controls">
+            <div className="left-controls">
+              {/* Play/Pause Button */}
+              <div className="control-button">
+                <button
+                  className="play-pause-button"
+                  onClick={() => {
+                    if (playing) {
+                      setPlaying(false);
+                      showFeedbackIcon("pause");
+                    } else {
+                      setPlaying(true);
+                      showFeedbackIcon("play");
+                    }
+                  }}
+                >
+                  {playing ? <FaPause /> : <FaPlay />}
+                </button>
+              </div>
+
+              {/* Rewind Button */}
+              <div className="control-button">
+                <button className="rewind-button" onClick={rewind}>
+                  <FaUndoAlt />
+                  <span className="button-label">10</span>
+                </button>
+              </div>
+
+              {/* Fast Forward Button */}
+              <div className="control-button">
+                <button className="fast-forward-button" onClick={fastForward}>
+                  <FaRedoAlt />
+                  <span className="button-label">10</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="right-controls">
+              {/* Volume Control */}
+              <div className="volume-control">
+                <button
+                  className="volume-button"
+                  onClick={() => setMuted(!muted)}
+                >
+                  {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="volume-slider"
+                />
+              </div>
+
+              {/* Progress Bar */}
+              <div className="progress-bar">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={progress}
+                  onChange={(e) => {
+                    const newProgress = parseFloat(e.target.value);
+                    playerRef.current.seekTo(newProgress / 100);
+                    setProgress(newProgress);
+                  }}
+                  className="progress-range"
+                  onMouseEnter={() => setProgressHovered(true)}
+                  onMouseLeave={() => setProgressHovered(false)}
+                  style={{
+                    height: "4px",
+                    appearance: "none",
+                    borderRadius: "5px",
+                    background: progressHovered
+                      ? "#ddd"
+                      : `linear-gradient(to right, red ${progress}%, #ddd ${progress}%)`,
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                />
+                <span className="progress-timer">
+                  {formatTime(duration - playedSeconds)}
+                </span>
+              </div>
+
+              {/* Fullscreen Button */}
+              <div className="fullscreen-button">
+                <button onClick={toggleFullScreen}>
+                  <FaExpand />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Controls */}
-      {controlsVisible && (
-        <div className="controls">
-          <div className="left-controls">
-            {/* Play/Pause Button */}
-            <div className="control-button">
-              <button
-                className="play-pause-button"
-                onClick={() => {
-                  if (playing) {
-                    setPlaying(false);
-                    showFeedbackIcon("pause");
-                  } else {
-                    setPlaying(true);
-                    showFeedbackIcon("play");
-                  }
-                }}
-              >
-                {playing ? <FaPause /> : <FaPlay />}
-              </button>
-            </div>
-
-            {/* Rewind Button */}
-            <div className="control-button">
-              <button className="rewind-button" onClick={rewind}>
-                <FaUndoAlt />
-                <span className="button-label">10</span>
-              </button>
-            </div>
-
-            {/* Fast Forward Button */}
-            <div className="control-button">
-              <button className="fast-forward-button" onClick={fastForward}>
-                <FaRedoAlt />
-                <span className="button-label">10</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="right-controls">
-            {/* Volume Control */}
-            <div className="volume-control">
-              <button
-                className="volume-button"
-                onClick={() => setMuted(!muted)}
-              >
-                {muted ? <FaVolumeMute /> : <FaVolumeUp />}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.1"
-                value={volume}
-                onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="volume-slider"
-              />
-            </div>
-
-            {/* Progress Bar */}
-            <div className="progress-bar">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={progress}
-                onChange={(e) => {
-                  const newProgress = parseFloat(e.target.value);
-                  playerRef.current.seekTo(newProgress / 100);
-                  setProgress(newProgress);
-                }}
-                className="progress-range"
-                onMouseEnter={() => setProgressHovered(true)}
-                onMouseLeave={() => setProgressHovered(false)}
-                style={{
-                  height: "4px",
-                  appearance: "none",
-                  borderRadius: "5px",
-                  background: progressHovered
-                    ? "#ddd"
-                    : `linear-gradient(to right, red ${progress}%, #ddd ${progress}%)`,
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-              />
-              <span className="progress-timer">{formatTime(duration - playedSeconds)}</span>
-            </div>
-            
-            {/* Fullscreen Button */}
-            <div className="fullscreen-button">
-              <button onClick={toggleFullScreen}>
-                <FaExpand />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
