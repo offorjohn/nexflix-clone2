@@ -55,7 +55,7 @@ const Navbar = () => {
           onClick={toggleChildrenDropdown} 
           onMouseDown={(e) => e.preventDefault()}  // Prevent default focus outline
         >
-          <p className="dropdown-title">Children</p>
+          <p className="dropdown-title">Categories</p>
           {showChildrenDropdown && (
             <div className="dropdown-menu">
               <Link to="/kids" className="dropdown-item">Kids</Link>
