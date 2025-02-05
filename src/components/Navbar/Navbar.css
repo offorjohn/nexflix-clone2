@@ -77,3 +77,38 @@
     }
    
 }
+
+/* Dropdown container */
+.dropdown-container {
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+  }
+  
+  /* Style for the dropdown menu */
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    z-index: 10;
+  }
+  
+  /* Dropdown items */
+  .dropdown-item {
+    padding: 8px 15px;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: background 0.3s ease;
+  }
+  
+  .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
