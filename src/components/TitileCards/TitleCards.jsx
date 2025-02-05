@@ -1,21 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+// src/components/TitileCards/TitleCards.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './TitleCards.css';
 
-// Import your local image with the correct relative path.
+// Import your local images
 import card_img1 from '../../assets/cards/card1.jpg';
-
-
-// Import your local image with the correct relative path.
 import card_img2 from '../../assets/cards/card2.jpg';
-
-
-// Import your local image with the correct relative path.
 import card_img3 from '../../assets/cards/card3.jpg';
 
-// Map the movie name (as in your JSON) to the local image.
+// Map movie names to local images
 const localImages = {
   "Hard Home 2024": card_img1,
   "Input": card_img2,
@@ -25,14 +21,14 @@ const localImages = {
 const TitleCards = ({ title }) => {
   const [movies, setMovies] = useState([]);
   const cardsRef = useRef();
+  const { t } = useTranslation();
 
-  // Horizontal scroll handler using mouse wheel events.
+  // Horizontal scroll handler
   const handleWheel = (event) => {
     event.preventDefault();
     cardsRef.current.scrollLeft += event.deltaY;
   };
 
-  // Fetch the movies.json file from your S3 bucket when the component mounts.
   useEffect(() => {
     fetch('https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json')
       .then(response => {
@@ -42,10 +38,9 @@ const TitleCards = ({ title }) => {
         return response.json();
       })
       .then(data => {
-        // Merge local images into each movie object.
         const moviesWithImages = data.map(movie => ({
           ...movie,
-          image: localImages[movie.name] || null, // Provide a default image if needed.
+          image: localImages[movie.name] || null,
         }));
         setMovies(moviesWithImages);
       })
@@ -54,14 +49,13 @@ const TitleCards = ({ title }) => {
 
   return (
     <div className="title-cards">
-      <h2>{title ? title : "Popular on Netflix"}</h2>
+      <h2>{title ? title : t('popularOnNetflix')}</h2>
       <div className="card-list" ref={cardsRef} onWheel={handleWheel}>
         {movies.map((movie, index) => (
           <Link to={`/player/${movie.id}`} className="card" key={movie.id || index}>
             {movie.image ? (
               <img src={movie.image} alt={movie.name} />
             ) : (
-              // Optionally render a fallback image if no local image exists.
               <img src="/path/to/default-image.jpg" alt={movie.name} />
             )}
             <p>{movie.name}</p>

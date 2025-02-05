@@ -1,15 +1,18 @@
 /* eslint-disable no-unused-vars */
+// src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import Home from './pages/Home/Home';
 import SearchPage from './pages/Search/SearchPage';
 import Login from './pages/Login/Login';
-import netflix_spinner from './assets/netflix_spinner.gif';
-
 import Player from './pages/Player/Player';
+import netflix_spinner from './assets/netflix_spinner.gif';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+// IMPORTANT: Import the i18n configuration so translations initialize.
+import './i18n';
 
 const auth = getAuth();
 
@@ -25,7 +28,6 @@ const App = () => {
           if (user) {
             console.log("User is logged in");
             setUser(user);
-            // Navigate only if the user was previously logged out
             if (window.location.pathname === '/login') {
               navigate('/');
             }
@@ -35,8 +37,7 @@ const App = () => {
           }
           setLoading(false);
         });
-
-        return () => unsubscribe(); // Cleanup listener
+        return () => unsubscribe();
       })
       .catch((error) => {
         console.error("Error setting persistence:", error);
@@ -44,8 +45,6 @@ const App = () => {
       });
   }, [navigate]);
 
- 
-  // ✅ FIXED: Ensure loading screen is correctly returned
   if (loading) {
     return (
       <div style={{
@@ -53,14 +52,14 @@ const App = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#000' // Netflix-style dark background
+        backgroundColor: '#000'
       }}>
         <img src={netflix_spinner} alt="Loading..." style={{ width: '100px', height: '100px' }} />
       </div>
     );
   }
+
   return (
-   
     <div>
       <ToastContainer theme="dark" />
       <Routes>

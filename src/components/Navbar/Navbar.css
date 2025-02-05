@@ -35,6 +35,7 @@
 .navbar-right .icons{
     width: 20px;
     cursor: none;
+    margin-left: 8px;
 }
 .navbar-right .profile{
     border-radius: 4px;
@@ -43,7 +44,7 @@
 .navbar-profile{
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
     cursor: none;
     position: relative;
 }

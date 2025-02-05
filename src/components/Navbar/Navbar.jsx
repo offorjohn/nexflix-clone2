@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
+// src/components/Navbar/Navbar.jsx
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next'; // Import the translation hook
 import './Navbar.css';
 import logo from '../../assets/logo.png';
 import search_icon from '../../assets/search_icon.svg';
@@ -11,6 +13,7 @@ import { logout } from '../../firebase';
 
 const Navbar = () => {
   const navRef = useRef();
+  const { t, i18n } = useTranslation(); // Get t function and i18n instance
   const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
 
   useEffect(() => {
@@ -27,6 +30,10 @@ const Navbar = () => {
     setShowChildrenDropdown((prevState) => !prevState);
   };
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <div ref={navRef} className='navbar'>
       <div className="navbar-left">
@@ -35,12 +42,12 @@ const Navbar = () => {
           <img src={logo} alt="Logo" />
         </Link>
         <ul>
-          <li>Home</li>
-          <li>TV Shows</li>
-          <li>Movies</li>
-          <li>New & Popular</li>
-          <li>My List</li>
-          <li>Browse by Languages</li>
+          <li>{t('home')}</li>
+          <li>{t('tvShows')}</li>
+          <li>{t('movies')}</li>
+          <li>{t('newAndPopular')}</li>
+          <li>{t('myList')}</li>
+          <li>{t('browseByLanguages')}</li>
         </ul>
       </div>
 
@@ -49,18 +56,18 @@ const Navbar = () => {
           <img src={search_icon} alt="Search" className='icons' />
         </Link>
 
-        {/* Children Dropdown */}
+        {/* Dropdown for Categories */}
         <div 
           className="dropdown-container"
           onClick={toggleChildrenDropdown} 
           onMouseDown={(e) => e.preventDefault()}  // Prevent default focus outline
         >
-          <p className="dropdown-title">Categories</p>
+          <p className="dropdown-title">{t('children')}</p>
           {showChildrenDropdown && (
             <div className="dropdown-menu">
-              <Link to="/kids" className="dropdown-item">Kids</Link>
-              <Link to="/family" className="dropdown-item">Family</Link>
-              <Link to="/education" className="dropdown-item">Educational</Link>
+              <Link to="/kids" className="dropdown-item">{t('kids')}</Link>
+              <Link to="/family" className="dropdown-item">{t('family')}</Link>
+              <Link to="/education" className="dropdown-item">{t('educational')}</Link>
             </div>
           )}
         </div>
@@ -71,9 +78,15 @@ const Navbar = () => {
           <img src={profile_img} alt="" className='profile' />
           <img src={caret_icon} alt="" />
           <div className="dropdown">
-            <p onClick={() => logout()}>Sign Out</p>
+            <p onClick={() => logout()}>{t('signOut')}</p>
           </div>
         </div>
+
+        {/* Language Selector */}
+        <select onChange={(e) => changeLanguage(e.target.value)} className="lang-selector">
+          <option value="en">English</option>
+          <option value="ar">العربية</option>
+        </select>
       </div>
     </div>
   );
