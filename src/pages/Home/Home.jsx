@@ -70,11 +70,18 @@ const Home = () => {
                 <p className="release-date">Release Date: {featuredMovie.releaseDate}</p>
               )}
               <div className="hero-btns">
-                {/* Link to the player page using the movie ID */}
-                <Link to={`/player/${featuredMovie.id}`} className='btn'>
+                {/* Link to the player page using the movie ID with default focus prevention */}
+                <Link
+                  to={`/player/${featuredMovie.id}`}
+                  className='btn'
+                  onMouseDown={(e) => e.preventDefault()}
+                >
                   <img src={play_icon} alt="Play" /> Play
                 </Link>
-                <button className='btn dark-btn'>
+                <button
+                  className='btn dark-btn'
+                  onMouseDown={(e) => e.preventDefault()}
+                >
                   <img src={info_icon} alt="More Info" /> More Info
                 </button>
               </div>

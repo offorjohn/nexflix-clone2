@@ -23,6 +23,10 @@ const Navbar = () => {
     });
   }, []);
 
+  const toggleChildrenDropdown = () => {
+    setShowChildrenDropdown((prevState) => !prevState);
+  };
+
   return (
     <div ref={navRef} className='navbar'>
       <div className="navbar-left">
@@ -47,10 +51,9 @@ const Navbar = () => {
 
         {/* Children Dropdown */}
         <div 
-          className="dropdown-container" 
-          onMouseEnter={() => setShowChildrenDropdown(true)} 
-          onMouseLeave={() => setShowChildrenDropdown(false)}
-          onMouseDown={(e) => e.preventDefault()} // Prevent default focus
+          className="dropdown-container"
+          onClick={toggleChildrenDropdown} 
+          onMouseDown={(e) => e.preventDefault()}  // Prevent default focus outline
         >
           <p className="dropdown-title">Children</p>
           {showChildrenDropdown && (

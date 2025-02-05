@@ -25,7 +25,7 @@
     gap: 20px;
 }
 .navbar-left ul li{
-    cursor: pointer;
+    cursor: none;
 }
 .navbar-right{
     display: flex;
@@ -34,7 +34,7 @@
 }
 .navbar-right .icons{
     width: 20px;
-    cursor: pointer;
+    cursor: none;
 }
 .navbar-right .profile{
     border-radius: 4px;
@@ -44,7 +44,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
+    cursor: none;
     position: relative;
 }
 .navbar .dropdown{
@@ -61,7 +61,7 @@
 }
 .navbar .dropdown p{
     font-size: 13px;
-    cursor: pointer;
+    cursor: none;
 }
 .navbar-profile:hover .dropdown{
     display: block;
