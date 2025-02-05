@@ -6,15 +6,18 @@ const LanguagePrompt = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    // If the current language is not Arabic
-    if (i18n.language !== 'ar') {
-      // Show a confirmation dialog (you could use a custom modal instead)
+    // Check if the user has already been prompted
+    const hasPrompted = localStorage.getItem('languagePrompted');
+
+    if (!hasPrompted && i18n.language !== 'ar') {
       const switchToArabic = window.confirm(
         "This site is in Arabic. Would you like to switch to Arabic?"
       );
       if (switchToArabic) {
         i18n.changeLanguage('ar');
       }
+      // Mark that the user has been prompted
+      localStorage.setItem('languagePrompted', 'true');
     }
   }, [i18n]);
 

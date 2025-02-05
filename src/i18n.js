@@ -12,21 +12,18 @@ const resources = {
 };
 
 i18n
-  // Use the browser language detector plugin
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    // No explicit lng is set here—this lets the detector run,
-    // but note our fallback is Arabic.
     fallbackLng: 'ar',
     interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
+      escapeValue: false, // react already safes from xss
     },
     detection: {
-      // Optional options
-      order: ['navigator', 'htmlTag', 'path', 'subdomain'],
-      caches: ['localStorage', 'cookie'], // caches the detected language
+      // Make localStorage the first source to check
+      order: ['localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+      caches: ['localStorage', 'cookie'],
     },
   });
 
