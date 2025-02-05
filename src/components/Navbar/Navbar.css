@@ -84,7 +84,7 @@
 /* Dropdown container */
 .dropdown-container {
     position: relative;
-    cursor: none;
+    cursor: pointer;
     padding: 10px;
   }
   

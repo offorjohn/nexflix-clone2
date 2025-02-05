@@ -9,6 +9,8 @@ import Login from './pages/Login/Login';
 import Player from './pages/Player/Player';
 import netflix_spinner from './assets/netflix_spinner.gif';
 import { ToastContainer } from 'react-toastify';
+
+import LanguagePrompt from './components/LanguagePrompt';
 import 'react-toastify/dist/ReactToastify.css';
 
 // IMPORTANT: Import the i18n configuration so translations initialize.
@@ -62,6 +64,8 @@ const App = () => {
   return (
     <div>
       <ToastContainer theme="dark" />
+
+      <LanguagePrompt />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

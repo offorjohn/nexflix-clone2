@@ -17,8 +17,9 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    // Remove the hardcoded 'lng' option so that the detector can decide
-    fallbackLng: 'en',
+    // No explicit lng is set here—this lets the detector run,
+    // but note our fallback is Arabic.
+    fallbackLng: 'ar',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
