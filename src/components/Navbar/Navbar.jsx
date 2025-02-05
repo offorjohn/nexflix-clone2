@@ -50,6 +50,7 @@ const Navbar = () => {
           className="dropdown-container" 
           onMouseEnter={() => setShowChildrenDropdown(true)} 
           onMouseLeave={() => setShowChildrenDropdown(false)}
+          onMouseDown={(e) => e.preventDefault()} // Prevent default focus
         >
           <p className="dropdown-title">Children</p>
           {showChildrenDropdown && (
@@ -67,7 +68,7 @@ const Navbar = () => {
           <img src={profile_img} alt="" className='profile' />
           <img src={caret_icon} alt="" />
           <div className="dropdown">
-            <p onClick={() => logout()}>تسجيل الخروج</p>
+            <p onClick={() => logout()}>Sign Out</p>
           </div>
         </div>
       </div>
