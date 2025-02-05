@@ -125,7 +125,7 @@
 /* Dropdown container */
 .dropdown-container {
     position: relative;
-    cursor: pointer;
+    cursor: none;
     padding: 10px;
   }
   
