@@ -1,43 +1,41 @@
 /* eslint-disable no-unused-vars */
 // src/components/Navbar/Navbar.jsx
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next'; // Import the translation hook
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../../assets/logo.png';
 import search_icon from '../../assets/search_icon.svg';
 import bell_icon from '../../assets/bell_icon.svg';
-import { Link } from 'react-router-dom';
 import profile_img from '../../assets/profile_img.png';
 import caret_icon from '../../assets/caret_icon.svg';
 import { logout } from '../../firebase';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { t, i18n } = useTranslation(); // Get t function and i18n instance
+  const { t } = useTranslation(); // no longer need the i18n instance here
   const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
+    const handleScroll = () => {
       if (window.scrollY >= 80) {
         navRef.current.classList.add('nav-dark');
       } else {
         navRef.current.classList.remove('nav-dark');
       }
-    });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleChildrenDropdown = () => {
     setShowChildrenDropdown((prevState) => !prevState);
   };
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
-
   return (
-    <div ref={navRef} className='navbar'>
+    <div ref={navRef} className="navbar">
       <div className="navbar-left">
-        {/* Wrap the logo in a Link to redirect to the homepage */}
         <Link to="/">
           <img src={logo} alt="Logo" />
         </Link>
@@ -52,15 +50,14 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-right">
-        <Link to={"/search"}>
-          <img src={search_icon} alt="Search" className='icons' />
+        <Link to="/search">
+          <img src={search_icon} alt="Search" className="icons" />
         </Link>
 
-        {/* Dropdown for Categories */}
         <div 
           className="dropdown-container"
-          onClick={toggleChildrenDropdown} 
-          onMouseDown={(e) => e.preventDefault()}  // Prevent default focus outline
+          onClick={toggleChildrenDropdown}
+          onMouseDown={(e) => e.preventDefault()} // Prevent default focus outline
         >
           <p className="dropdown-title">{t('children')}</p>
           {showChildrenDropdown && (
@@ -72,21 +69,23 @@ const Navbar = () => {
           )}
         </div>
 
-        <img src={bell_icon} alt="" className='icons' />
+        <img src={bell_icon} alt="Notifications" className="icons" />
 
         <div className="navbar-profile">
-          <img src={profile_img} alt="" className='profile' />
-          <img src={caret_icon} alt="" />
+          <img src={profile_img} alt="Profile" className="profile" />
+          <img src={caret_icon} alt="Caret" />
           <div className="dropdown">
             <p onClick={() => logout()}>{t('signOut')}</p>
           </div>
         </div>
 
-        {/* Language Selector */}
+        {/* Remove or comment out the language selector if not needed */}
+        {/*
         <select onChange={(e) => changeLanguage(e.target.value)} className="lang-selector">
           <option value="en">English</option>
           <option value="ar">العربية</option>
         </select>
+        */}
       </div>
     </div>
   );
