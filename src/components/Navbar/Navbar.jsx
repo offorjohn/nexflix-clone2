@@ -50,6 +50,7 @@ const Navbar = () => {
           className="dropdown-container" 
           onMouseEnter={() => setShowChildrenDropdown(true)} 
           onMouseLeave={() => setShowChildrenDropdown(false)}
+          onMouseDown={(e) => e.preventDefault()} // Prevent default focus
         >
           <p className="dropdown-title">Children</p>
           {showChildrenDropdown && (

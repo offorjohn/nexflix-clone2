@@ -45,6 +45,50 @@
     cursor: pointer;
     position: relative;
 }
+/* Dropdown container */
+.dropdown-container {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  /* Dropdown title styling */
+  .dropdown-title {
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    outline: none; /* Remove default outline */
+    user-select: none;
+  }
+  
+  /* Remove outline when the dropdown title is focused */
+  .dropdown-title:focus {
+    outline: none;
+  }
+  
+  /* Dropdown menu styling */
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #181818;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+  }
+  
+  /* Dropdown item styling */
+  .dropdown-item {
+    color: white;
+    padding: 8px 12px;
+    display: block;
+    text-decoration: none;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #333;
+  }
+  
 .navbar .dropdown{
     position: absolute;
     top: 100%;
