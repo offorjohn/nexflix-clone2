@@ -48,7 +48,7 @@
 /* Dropdown container */
 .dropdown-container {
     position: relative;
-    cursor: pointer;
+    cursor: none;
   }
   
   /* Dropdown title styling */
