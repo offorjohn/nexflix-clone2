@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../../assets/logo.png';
+import category_icon from '../../assets/category_icon.svg'; // new icon import
 import search_icon from '../../assets/search_icon.svg';
 import bell_icon from '../../assets/bell_icon.svg';
 import profile_img from '../../assets/profile_img.png';
@@ -20,11 +21,7 @@ const Navbar = () => {
 
   // Prevent body scrolling when the mobile sidebar is open
   useEffect(() => {
-    if (showMobileSidebar) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    document.body.style.overflow = showMobileSidebar ? 'hidden' : 'auto';
   }, [showMobileSidebar]);
 
   // Add or remove nav-dark class on scroll
@@ -71,12 +68,13 @@ const Navbar = () => {
     };
   }, [showMobileSidebar]);
 
-  // Handle category click based on viewport size
+  // Toggle mobile sidebar for category view
   const handleCategoryClick = () => {
     if (isMobile) {
       setShowMobileSidebar((prev) => !prev);
     }
   };
+
   const genres = [
     { key: 'home', label: t('home', 'Home') },
     { key: 'tvShows', label: t('tvShows', 'TV Shows') },
@@ -85,38 +83,41 @@ const Navbar = () => {
     { key: 'myList', label: t('myList', 'My List') },
     { key: 'browseByLanguages', label: t('browseByLanguages', 'Browse by Languages') }
   ];
-  
 
   return (
     <>
       <div ref={navRef} className="navbar">
         <div className="navbar-left">
+          {isMobile && (
+            // Category icon appears only on mobile, before the logo
+            <button
+              className="category-icon-btn"
+              onClick={handleCategoryClick}
+              aria-label={t('category', 'Category')}
+            >
+              <img src={category_icon} alt="Category" className="category-icon" />
+            </button>
+          )}
           <Link to="/">
             <img src={logo} alt="Logo" />
           </Link>
-          <ul>
-            <li>{t('home')}</li>
-            <li>{t('tvShows')}</li>
-            <li>{t('movies')}</li>
-            <li>{t('newAndPopular')}</li>
-            <li>{t('myList')}</li>
-            <li>{t('browseByLanguages')}</li>
-          </ul>
+          {/* On large screens, render the navigation links */}
+          {!isMobile && (
+            <ul>
+              <li>{t('home')}</li>
+              <li>{t('tvShows')}</li>
+              <li>{t('movies')}</li>
+              <li>{t('newAndPopular')}</li>
+              <li>{t('myList')}</li>
+              <li>{t('browseByLanguages')}</li>
+            </ul>
+          )}
         </div>
 
         <div className="navbar-right">
           <Link to="/search">
             <img src={search_icon} alt="Search" className="icons" />
           </Link>
-
-          {/* Category text that acts differently on mobile */}
-          <div
-            className="dropdown-container"
-            onClick={handleCategoryClick}
-            onMouseDown={(e) => e.preventDefault()}
-          >
-            <p className="dropdown-title">{t('category', 'Category')}</p>
-          </div>
 
           <img src={bell_icon} alt="Notifications" className="icons" />
 

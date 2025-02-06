@@ -13,7 +13,7 @@
   .navbar-left {
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 30px;
   }
   
   .navbar-left img {
@@ -32,7 +32,7 @@
   
   .navbar-right {
     display: flex;
-    gap: 10px;
+    gap: 24px;
     align-items: center;
   }
   
@@ -40,6 +40,33 @@
     width: 20px;
     cursor: pointer;
   }
+  .category-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-right: -30px;
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    margin-top: -15px;
+
+  }
+  
+  .category-icon {
+    width: 24px;  /* Adjust as needed */
+    height: 24px; /* Adjust as needed */
+    filter: brightness(0) saturate(100%) invert(100%); /* Makes the icon white */
+  }
+  
+  @media (max-width: 800px) {
+    .category-icon {
+      width: 20px;
+      height: 35px;
+    }
+  }
+  
   
   .navbar-right .profile {
     border-radius: 4px;
@@ -83,6 +110,7 @@
   @media (max-width: 800px) {
     .navbar {
       padding: 20px 4%;
+      margin-left: -19px;
     }
     .navbar-left ul {
       display: none;
