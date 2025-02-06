@@ -13,9 +13,21 @@ import { logout } from '../../firebase';
 
 const Navbar = () => {
   const navRef = useRef();
-  const { t } = useTranslation(); // no longer need the i18n instance here
-  const [showChildrenDropdown, setShowChildrenDropdown] = useState(false);
+  const mobileSidebarRef = useRef(); // new ref for the mobile sidebar
+  const { t } = useTranslation();
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
+  // Prevent body scrolling when the mobile sidebar is open
+  useEffect(() => {
+    if (showMobileSidebar) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showMobileSidebar]);
+
+  // Add or remove nav-dark class on scroll
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY >= 80) {
@@ -29,65 +41,128 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleChildrenDropdown = () => {
-    setShowChildrenDropdown((prevState) => !prevState);
+  // Update isMobile state on window resize
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 800);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close mobile sidebar when clicking outside (if needed)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showMobileSidebar &&
+        mobileSidebarRef.current &&
+        !mobileSidebarRef.current.contains(event.target)
+      ) {
+        setShowMobileSidebar(false);
+      }
+    };
+
+    if (showMobileSidebar) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMobileSidebar]);
+
+  // Handle category click based on viewport size
+  const handleCategoryClick = () => {
+    if (isMobile) {
+      setShowMobileSidebar((prev) => !prev);
+    }
   };
+  const genres = [
+    { key: 'home', label: t('home', 'Home') },
+    { key: 'tvShows', label: t('tvShows', 'TV Shows') },
+    { key: 'movies', label: t('movies', 'Movies') },
+    { key: 'newAndPopular', label: t('newAndPopular', 'New & Popular') },
+    { key: 'myList', label: t('myList', 'My List') },
+    { key: 'browseByLanguages', label: t('browseByLanguages', 'Browse by Languages') }
+  ];
+  
 
   return (
-    <div ref={navRef} className="navbar">
-      <div className="navbar-left">
-        <Link to="/">
-          <img src={logo} alt="Logo" />
-        </Link>
-        <ul>
-          <li>{t('home')}</li>
-          <li>{t('tvShows')}</li>
-          <li>{t('movies')}</li>
-          <li>{t('newAndPopular')}</li>
-          <li>{t('myList')}</li>
-          <li>{t('browseByLanguages')}</li>
-        </ul>
-      </div>
-
-      <div className="navbar-right">
-        <Link to="/search">
-          <img src={search_icon} alt="Search" className="icons" />
-        </Link>
-
-        <div 
-          className="dropdown-container"
-          onClick={toggleChildrenDropdown}
-          onMouseDown={(e) => e.preventDefault()} // Prevent default focus outline
-        >
-          <p className="dropdown-title">{t('children')}</p>
-          {showChildrenDropdown && (
-            <div className="dropdown-menu">
-              <Link to="/kids" className="dropdown-item">{t('kids')}</Link>
-              <Link to="/family" className="dropdown-item">{t('family')}</Link>
-              <Link to="/education" className="dropdown-item">{t('educational')}</Link>
-            </div>
-          )}
+    <>
+      <div ref={navRef} className="navbar">
+        <div className="navbar-left">
+          <Link to="/">
+            <img src={logo} alt="Logo" />
+          </Link>
+          <ul>
+            <li>{t('home')}</li>
+            <li>{t('tvShows')}</li>
+            <li>{t('movies')}</li>
+            <li>{t('newAndPopular')}</li>
+            <li>{t('myList')}</li>
+            <li>{t('browseByLanguages')}</li>
+          </ul>
         </div>
 
-        <img src={bell_icon} alt="Notifications" className="icons" />
+        <div className="navbar-right">
+          <Link to="/search">
+            <img src={search_icon} alt="Search" className="icons" />
+          </Link>
 
-        <div className="navbar-profile">
-          <img src={profile_img} alt="Profile" className="profile" />
-          <img src={caret_icon} alt="Caret" />
-          <div className="dropdown">
-            <p onClick={() => logout()}>{t('signOut')}</p>
+          {/* Category text that acts differently on mobile */}
+          <div
+            className="dropdown-container"
+            onClick={handleCategoryClick}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <p className="dropdown-title">{t('category', 'Category')}</p>
+          </div>
+
+          <img src={bell_icon} alt="Notifications" className="icons" />
+
+          <div className="navbar-profile">
+            <img src={profile_img} alt="Profile" className="profile" />
+            <img src={caret_icon} alt="Caret" />
+            <div className="dropdown">
+              <p onClick={() => logout()}>{t('signOut')}</p>
+            </div>
           </div>
         </div>
-
-        {/* Remove or comment out the language selector if not needed */}
-        {/*
-        <select onChange={(e) => changeLanguage(e.target.value)} className="lang-selector">
-          <option value="en">English</option>
-          <option value="ar">العربية</option>
-        </select>
-        */}
       </div>
-    </div>
+
+      {/* Overlay to disable background interactions */}
+      {isMobile && showMobileSidebar && (
+        <div
+          className="overlay"
+          onClick={() => setShowMobileSidebar(false)}
+        ></div>
+      )}
+
+      {/* Mobile Sidebar for movie genres */}
+      {isMobile && showMobileSidebar && (
+        <div className="mobile-sidebar" ref={mobileSidebarRef}>
+          <button
+            className="close-sidebar"
+            onClick={() => setShowMobileSidebar(false)}
+          >
+            &times;
+          </button>
+          <img src={logo} alt="Logo" className="mobile-logo" />
+          <ul>
+            {genres.map((genre) => (
+              <li key={genre.key}>
+                <Link
+                  to={`/genre/${genre.key}`}
+                  onClick={() => setShowMobileSidebar(false)}
+                >
+                  {genre.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     width: 100%;
     padding: 20px 6%;
     display: flex;
@@ -8,47 +8,53 @@
     color: #e5e5e5;
     background-image: linear-gradient(180deg, rgba(0,0,0,0.7) 10%, transparent);
     z-index: 1;
-}
-
-
-.navbar-left{
+  }
+  
+  .navbar-left {
     display: flex;
     align-items: center;
     gap: 50px;
-}
-.navbar-left img{
+  }
+  
+  .navbar-left img {
     width: 90px;
-}
-.navbar-left ul{
+  }
+  
+  .navbar-left ul {
     display: flex;
     list-style: none;
     gap: 20px;
-}
-.navbar-left ul li{
+  }
+  
+  .navbar-left ul li {
     cursor: pointer;
-}
-.navbar-right{
+  }
+  
+  .navbar-right {
     display: flex;
     gap: 20px;
     align-items: center;
-}
-.navbar-right .icons{
+  }
+  
+  .navbar-right .icons {
     width: 20px;
     cursor: pointer;
-    
-}
-.navbar-right .profile{
+  }
+  
+  .navbar-right .profile {
     border-radius: 4px;
     height: 30px;
-}
-.navbar-profile{
+  }
+  
+  .navbar-profile {
     display: flex;
     align-items: center;
     gap: 14px;
     cursor: pointer;
     position: relative;
-}
-.navbar .dropdown{
+  }
+  
+  .navbar .dropdown {
     position: absolute;
     top: 100%;
     right: 0;
@@ -59,77 +65,152 @@
     text-decoration: underline;
     z-index: 1;
     display: none;
-}
-.navbar .dropdown p{
+  }
+  
+  .navbar .dropdown p {
     font-size: 13px;
     cursor: pointer;
-}
-.navbar-profile:hover .dropdown{
+  }
+  
+  .navbar-profile:hover .dropdown {
     display: block;
-}
-.nav-dark{
+  }
+  
+  .nav-dark {
     background: #141414;
-}
-
-@media (max-width: 800px) {
-    .navbar{
-        padding: 20px 4%;
+  }
+  
+  @media (max-width: 800px) {
+    .navbar {
+      padding: 20px 4%;
     }
-    .navbar-left ul{
-        display: none;
+    .navbar-left ul {
+      display: none;
     }
-   
-}
-
-/* Dropdown container */
-.dropdown-container {
+  }
+  
+  /* Dropdown container */
+  .dropdown-container {
     position: relative;
     cursor: pointer;
     padding: 10px;
   }
   
-  /* Style for the dropdown menu */
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    border-radius: 5px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    min-width: 150px;
-    z-index: 10;
+  .dropdown-container .dropdown-title {
+    transition: color 0.3s ease;
   }
   
-  /* Dropdown items */
-  .dropdown-item {
-    padding: 8px 15px;
-    color: white;
-    text-decoration: none;
-    display: block;
-    transition: background 0.3s ease;
+  .dropdown-container .dropdown-title:hover {
+    color: #b81d24; /* Red on hover */
   }
   
-  .dropdown-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
   @media (min-width: 801px) {
-    /* Change text color on hover for navbar list items */
     .navbar-left ul li:hover,
-    
-    /* Change text color on hover for icons in the navbar-right */
     .navbar-right .icons:hover,
-    
-    /* Change text color on hover for the profile container */
     .navbar-profile:hover,
-    
-    /* Change text color on hover for dropdown items (if not already overridden) */
     .dropdown-item:hover,
-    
-    /* Change text color on hover for paragraph items inside dropdowns */
     .dropdown p:hover {
       color: red;
     }
+  }
+  
+  /* Mobile Sidebar */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%; /* Adjust width as desired */
+    height: 100%;
+    background-color: #141414;
+    color: #e5e5e5;
+    padding: 20px;
+    z-index: 100;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+    
+  }
+  
+  /* Change color when tapped (for mobile) */
+.mobile-sidebar a:active,
+.mobile-sidebar a:focus {
+  color: #b81d24; /* Red accent */
+}
+
+  .mobile-sidebar .close-sidebar {
+    background: none;
+    border: none;
+    color: #e5e5e5;
+    font-size: 2rem;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+  
+  .mobile-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  .mobile-sidebar a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  
+  /* Increase spacing between list items */
+  .mobile-sidebar li {
+    margin-bottom: 25px; /* Increased spacing for better separation */
+  }
+  
+  .mobile-sidebar a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  
+  /* Change text color on hover */
+  .mobile-sidebar a:hover {
+    color: #b81d24; /* Red accent on hover for links */
+  }
+  
+  /* Mobile logo styling */
+  .mobile-logo {
+    display: block;
+    width: 150px; /* Adjust as needed */
+    margin: 0 auto 20px auto;
+    transition: filter 0.3s ease;
+  }
+  
+  .mobile-logo:hover {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6200%) hue-rotate(357deg) brightness(103%) contrast(107%);
+  }
+  
+
+  /* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+    z-index: 998; /* Ensure it's below the sidebar if your sidebar has a higher z-index */
+  }
+  
+  /* Mobile sidebar styles (ensure a higher z-index than the overlay) */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%; /* Adjust width as needed */
+    height: 100vh;
+    z-index: 999; /* Should be higher than the overlay */
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
   }
   

@@ -14,7 +14,6 @@ import card_img1 from '../../assets/cards/card1.jpg';
 import card_img2 from '../../assets/cards/card2.jpg';
 import card_img3 from '../../assets/cards/card3.jpg';
 
-// Map movie names (from your JSON) to your local images.
 const localImages = {
   "Hard Home 2024": card_img1,
   "Input": card_img2,
@@ -54,43 +53,63 @@ const Home = () => {
   }, []);
 
   return (
-    <div className='home'>
+    <div className="home">
       <Navbar />
       <div className="hero">
         {featuredMovie ? (
           <>
-            {/* Use the featured movie image as the banner */}
-            <img src={featuredMovie.image} alt={featuredMovie.name} className='banner-img' />
+            {/* Banner image as the background */}
+            <img
+              src={featuredMovie.image}
+              alt={featuredMovie.name}
+              className="banner-img"
+            />
             <div className="hero-caption">
-              {/* Display movie title and any additional attributes */}
-              <h1>{featuredMovie.name}</h1>
-              {featuredMovie.description && <p>{featuredMovie.description}</p>}
-              {/* Example: If you have a releaseDate attribute */}
-              {featuredMovie.releaseDate && (
-                <p className="release-date">Release Date: {featuredMovie.releaseDate}</p>
-              )}
+              {/* Top section splits into left and right parts */}
+              <div className="caption-top">
+                <div className="caption-left">
+                  {/* Featured movie title */}
+                  <h1>{featuredMovie.name}</h1>
+                  {/* Hardcoded movie description (replace with JSON data later) */}
+                  <p className="movie-description">
+                    A thrilling journey through an imaginative drama where dreams and reality merge.
+                  </p>
+                </div>
+                <div className="caption-right">
+                  {/* Vertical red line */}
+                  <div className="vertical-line"></div>
+                  {/* Movie info */}
+                  <div className="movie-info">
+                    <span className="movie-year">2024</span>
+                    <span className="movie-genre">Imagination, Drama</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Action buttons aligned at the right */}
               <div className="hero-btns">
-                {/* Link to the player page using the movie ID with default focus prevention */}
                 <Link
                   to={`/player/${featuredMovie.id}`}
-                  className='btn'
+                  className="btn"
                   onMouseDown={(e) => e.preventDefault()}
                 >
                   <img src={play_icon} alt="Play" /> Play
                 </Link>
                 <button
-                  className='btn dark-btn'
+                  className="btn dark-btn"
                   onMouseDown={(e) => e.preventDefault()}
                 >
                   <img src={info_icon} alt="More Info" /> More Info
                 </button>
               </div>
-              {/* Optionally include TitleCards here */}
-              <TitleCards />
+              
+              {/* Additional title cards (hidden on small devices) */}
+              <div className="hero-title-cards">
+                <TitleCards />
+              </div>
             </div>
           </>
         ) : (
-          // Loading or fallback state if no movie is available yet.
           <div className="loading">Loading...</div>
         )}
       </div>
