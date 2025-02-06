@@ -25,7 +25,7 @@
     gap: 20px;
 }
 .navbar-left ul li{
-    cursor: none;
+    cursor: pointer;
 }
 .navbar-right{
     display: flex;
@@ -34,7 +34,7 @@
 }
 .navbar-right .icons{
     width: 20px;
-    cursor: none;
+    cursor: pointer;
     
 }
 .navbar-right .profile{
@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    cursor: none;
+    cursor: pointer;
     position: relative;
 }
 .navbar .dropdown{
@@ -62,7 +62,7 @@
 }
 .navbar .dropdown p{
     font-size: 13px;
-    cursor: none;
+    cursor: pointer;
 }
 .navbar-profile:hover .dropdown{
     display: block;
@@ -113,5 +113,23 @@
   
   .dropdown-item:hover {
     background: rgba(255, 255, 255, 0.2);
+  }
+  @media (min-width: 801px) {
+    /* Change text color on hover for navbar list items */
+    .navbar-left ul li:hover,
+    
+    /* Change text color on hover for icons in the navbar-right */
+    .navbar-right .icons:hover,
+    
+    /* Change text color on hover for the profile container */
+    .navbar-profile:hover,
+    
+    /* Change text color on hover for dropdown items (if not already overridden) */
+    .dropdown-item:hover,
+    
+    /* Change text color on hover for paragraph items inside dropdowns */
+    .dropdown p:hover {
+      color: red;
+    }
   }
   
