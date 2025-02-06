@@ -13,7 +13,7 @@
   .navbar-left {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
   }
   
   .navbar-left img {
@@ -108,10 +108,10 @@
   }
   
   @media (max-width: 800px) {
-    .navbar {
-      padding: 20px 4%;
-      margin-left: -19px;
+    .navbar {padding: 20px 1.2%;
+        margin-left: -5px;
     }
+
     .navbar-left ul {
       display: none;
     }
