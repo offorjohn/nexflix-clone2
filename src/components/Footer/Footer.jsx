@@ -29,7 +29,7 @@ const Footer = () => {
         <li>Corporate Information</li>
         <li>Contact Us</li>
       </ul>
-      <p className='footer'>© 2024-2024 Mazaia, Inc.</p>
+      <p className='footer'>© 2024-2025 Mazaia, Inc.</p>
     </div>
   )
 }

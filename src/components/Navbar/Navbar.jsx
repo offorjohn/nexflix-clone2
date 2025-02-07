@@ -77,7 +77,7 @@ const Navbar = () => {
 
   const genres = [
     { key: 'home', label: t('home', 'Home') },
-    { key: 'tvShows', label: t('tvShows', 'TV Shows') },
+    { key: 'series', label: t('series', 'Series') },
     { key: 'movies', label: t('movies', 'Movies') },
     { key: 'newAndPopular', label: t('newAndPopular', 'New & Popular') },
     { key: 'myList', label: t('myList', 'My List') },
