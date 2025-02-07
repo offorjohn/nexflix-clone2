@@ -63,7 +63,7 @@
   @media (max-width: 800px) {
     .category-icon {
       width: 20px;
-      height: 35px;
+      height: 28px;
     }
   }
   
@@ -234,7 +234,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 80%; /* Adjust width as needed */
+    width: 62%; /* Adjust width as needed */
     height: 100vh;
     z-index: 999; /* Should be higher than the overlay */
     padding: 20px;
