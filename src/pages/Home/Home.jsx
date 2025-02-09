@@ -14,10 +14,14 @@ import card_img1 from '../../assets/cards/card1.jpg';
 import card_img2 from '../../assets/cards/card2.jpg';
 import card_img3 from '../../assets/cards/card3.jpg';
 
+import card_img4 from '../../assets/cards/card4.jpg';
+
 const localImages = {
-  "Hard Home 2024": card_img1,
-  "Input": card_img2,
-  "Outbreak 2024": card_img3
+  "Next Avengers: Heroes of Tomorrow": card_img1,
+  "Sea Fever": card_img2,
+  "Wild Robot": card_img4,
+  "deadpool.and.wolverine.2024.1080p.bluray.mp4": card_img3,
+  
 };
 
 // (Optional) A default image in case no mapping is found.
@@ -29,7 +33,7 @@ const Home = () => {
 
   // Fetch movies.json from your S3 bucket when the component mounts.
   useEffect(() => {
-    fetch('https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json')
+    fetch('https://video-buckett.s3.us-east-1.amazonaws.com/movies.json')
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

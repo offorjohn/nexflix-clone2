@@ -60,7 +60,7 @@ const NetflixPlayer = () => {
 
   // Fetch the movies.json file and find the movie with matching ID.
   useEffect(() => {
-    fetch("https://myvideobucket1101.s3.us-east-2.amazonaws.com/movies.json")
+    fetch("https://video-buckett.s3.us-east-1.amazonaws.com/movies.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
