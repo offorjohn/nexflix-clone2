@@ -1,12 +1,12 @@
-// src/components/LanguagePrompt.jsx
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const LanguagePrompt = () => {
   const { i18n } = useTranslation();
 
+  // ❌ Disabled prompt
+  /*
   useEffect(() => {
-    // Check if the user has already been prompted
     const hasPrompted = localStorage.getItem('languagePrompted');
 
     if (!hasPrompted && i18n.language !== 'ar') {
@@ -16,12 +16,12 @@ const LanguagePrompt = () => {
       if (switchToArabic) {
         i18n.changeLanguage('ar');
       }
-      // Mark that the user has been prompted
       localStorage.setItem('languagePrompted', 'true');
     }
   }, [i18n]);
+  */
 
-  return null; // This component doesn't render anything visible
+  return null;
 };
 
 export default LanguagePrompt;
