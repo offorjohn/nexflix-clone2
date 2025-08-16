@@ -3,15 +3,15 @@
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAgC5ycZgLukJ8pFbbFa52YefeLRa7zlLw",
-  authDomain: "socials-clone-fe172.firebaseapp.com",
-  projectId: "socials-clone-fe172",
-  storageBucket: "socials-clone-fe172.firebasestorage.app",
-  messagingSenderId: "401509975886",
-  appId: "1:401509975886:web:94d45aef4255a96524001f",
-  measurementId: "G-QV7FGB2TMZ"
+  apiKey: "AIzaSyAt4WjAa9-PiF-4LLWuXMb7coHorIPSyJ4",
+  authDomain: "redo-215cb.firebaseapp.com",
+  databaseURL: "https://redo-215cb-default-rtdb.firebaseio.com",
+  projectId: "redo-215cb",
+  storageBucket: "redo-215cb.appspot.com",
+  messagingSenderId: "490401602806",
+  appId: "1:490401602806:web:e28aaaa9fe66751c3260d7",
+  measurementId: "G-BFZGGVEJFN"
 };
-
 
 // craete a/c on themoviedb.org and replace access token below
 
