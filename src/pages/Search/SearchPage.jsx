@@ -30,24 +30,39 @@ const SearchPage = () => {
         setResults([]);
     };
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setLoading(true); // Show loading spinner
+   const handleSearch = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-        try {
-            localStorage.setItem("searchTerm", searchTerm); // Save search term
-            const res = await axios.get(`https://sprinkle-ionian-sodalite.glitch.me/api/v1/search/${activeTab}/${searchTerm}`);
-            setResults(res.data.content);
-        } catch (error) {
-            if (error.response?.status === 404) {
-                toast.error("Nothing found");
-            } else {
-                toast.error("An error occurred");
+    try {
+        localStorage.setItem("searchTerm", searchTerm);
+
+        const res = await axios.get(
+            `https://api.themoviedb.org/3/search/${activeTab}`,
+            {
+                params: {
+                    api_key: import.meta.env.VITE_TMDB_API_KEY, // store in .env
+                    query: searchTerm,
+                },
             }
-        } finally {
-            setLoading(false); // Hide loading spinner
+        );
+
+        console.log("TMDB Response:", res.data);
+
+        // TMDB returns { results: [...] }
+        setResults(res.data.results || []);
+    } catch (error) {
+        if (error.response?.status === 404) {
+            toast.error("Nothing found");
+        } else {
+            console.error(error);
+            toast.error("An error occurred");
         }
-    };
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     useEffect(() => {
         console.log("results", results);
